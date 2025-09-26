@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
+    <title>오늘 하루의 기분 노트</title>
+    <style>
+        /* 스타일(CSS)은 기존과 동일하게 유지됩니다 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #e8eaf6 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #90caf9, #8c9eff);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50" font-size="20">📔</text></svg>') no-repeat center;
+            background-size: 50px;
+            opacity: 0.1;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            background: #e8eaf6;
+            border-bottom: 1px solid #c5cae9;
+        }
+        
+        .nav-tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #3f51b5;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .nav-tab.active {
+            color: #303f9f;
+            border-bottom-color: #303f9f;
+            background: white;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 30px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+            font-size: 16px;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3f51b5;
+            box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.1);
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .radio-option {
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .radio-option input[type="radio"] {
+            display: none;
+        }
+        
+        .radio-option label {
+            display: block;
+            padding: 12px;
+            border: 2px solid #c5cae9;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+            color: #333;
+        }
+        
+        .radio-option input[type="radio"]:checked + label {
+            border-color: #3f51b5;
+            background: #3f51b5;
+            color: white;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #3f51b5, #8c9eff);
+            color: white;
+            padding: 18px;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(63, 81, 181, 0.3);
+        }
+
+        .guide-section {
+            background: #f1f8e9;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .guide-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #558b2f;
+            margin-bottom: 15px;
+        }
+        
+        .guide-content p {
+            margin-bottom: 10px;
+        }
+
+        .examples {
+            display: grid;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .example-item {
+            background: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border-left: 4px solid #9ccc65;
+            font-size: 13px;
+        }
+        
+        .example-positive {
+            border-left-color: #9ccc65;
+        }
+        
+        .example-negative {
+            border-left-color: #ef5350;
+        }
+
+        .inspiring-quote {
+            background: linear-gradient(135deg, #81c784, #a5d6a7);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .quote-text {
+            font-size: 16px;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+        
+        .quote-author {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📔 오늘 하루의 기분 노트</h1>
+            <p>나의 감정을 기록하고 하루를 돌아보아요</p>
+        </div>
+        
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('record')">✏️ 기분 기록하기</button>
+            <button class="nav-tab" onclick="showTab('guide')">📖 작성 가이드</button>
+            <button class="nav-tab" onclick="showTab('view')">👀 기록 모아보기</button>
+            <button class="nav-tab" onclick="showTab('stats')">📊 감정 통계</button>
+        </div>
+        
+        <div id="record" class="tab-content active">
+            <form name="mood-tracker" method="POST" data-netlify="true" action="/success.html">
+                <input type="hidden" name="form-name" value="mood-tracker">
+                
+                <div class="form-group">
+                    <label>☀️ 오늘의 기분은 어땠나요? *</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="mood-type" value="긍정" id="mood-positive" required>
+                            <label for="mood-positive">😊 긍정</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="mood-type" value="부정" id="mood-negative">
+                            <label for="mood-negative">😥 부정</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>📝 어떤 일이 있었나요? *</label>
+                    <textarea name="mood-description" rows="4" placeholder="예: 친구와 맛있는 점심을 먹어서 기분이 좋았다." required></textarea>
+                    <div class="help-text">언제, 어디서, 누구와, 어떤 감정을 느꼈는지 자유롭게 적어보세요.</div>
+                </div>
+                
+                <div class="form-group">
+                    <label>🧠 감정의 원인은 무엇인가요?</label>
+                    <input type="text" name="mood-cause" placeholder="예: 칭찬, 예상치 못한 선물, 실수, 갈등 등">
+                </div>
+                
+                <div class="form-group">
+                    <label>💫 지금 내 기분은 어떤가요? *</label>
+                    <div class="radio-group">
+                        <div class="radio-option"><input type="radio" name="my-feeling" value="매우 좋음" id="feeling1" required><label for="feeling1">😄 매우 좋음</label></div>
+                        <div class="radio-option"><input type="radio" name="my-feeling" value="좋음" id="feeling2"><label for="feeling2">🙂 좋음</label></div>
+                        <div class="radio-option"><input type="radio" name="my-feeling" value="보통" id="feeling3"><label for="feeling3">😐 보통</label></div>
+                        <div class="radio-option"><input type="radio" name="my-feeling" value="나쁨" id="feeling4"><label for="feeling4">😕 나쁨</label></div>
+                        <div class="radio-option"><input type="radio" name="my-feeling" value="매우 나쁨" id="feeling5"><label for="feeling5">😠 매우 나쁨</label></div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>⭐ 오늘 하루의 감정 점수는? (5점 만점) *</label>
+                    <div class="radio-group">
+                        <div class="radio-option"><input type="radio" name="mood-score" value="1" id="score1" required><label for="score1">1점</label></div>
+                        <div class="radio-option"><input type="radio" name="mood-score" value="2" id="score2"><label for="score2">2점</label></div>
+                        <div class="radio-option"><input type="radio" name="mood-score" value="3" id="score3"><label for="score3">3점</label></div>
+                        <div class="radio-option"><input type="radio" name="mood-score" value="4" id="score4"><label for="score4">4점</label></div>
+                        <div class="radio-option"><input type="radio" name="mood-score" value="5" id="score5"><label for="score5">5점</label></div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>👤 닉네임 (선택사항)</label>
+                    <input type="text" name="nickname" placeholder="오늘의 기록자 (익명도 가능)">
+                </div>
+                
+                <button type="submit" class="submit-btn">📝 오늘의 기분 기록하기</button>
+            </form>
+        </div>
+        
+        <div id="guide" class="tab-content">
+            <div class="guide-section">
+                <div class="guide-title">📖 기분 노트 작성 가이드</div>
+                <div class="guide-content">
+                    <p>자신의 감정을 솔직하게 기록하는 것은 감정을 이해하고 다스리는 데 큰 도움이 됩니다. 정답은 없으니 편안하게 작성해 보세요.</p>
+                    <p><strong>💡 기록 팁:</strong> 어떤 사건이 나의 기분에 영향을 미쳤는지, 그 때 어떤 감정을 느꼈고 어떤 생각이 들었는지 구체적으로 적어보는 것이 좋습니다.</p>
+                </div>
+            </div>
+
+            <div class="guide-section">
+                <div class="guide-title">✅ 기록 예시</div>
+                <div class="guide-content">
+                    <p><strong>긍정적인 기록 😊</strong></p>
+                    <div class="examples">
+                        <div class="example-item example-positive">"오랜만에 친구를 만나 시간 가는 줄 모르고 수다를 떨었다. 너무 즐거웠다."</div>
+                        <div class="example-item example-positive">"어려웠던 코딩 문제를 드디어 해결했다. 뿌듯하고 자신감이 생겼다."</div>
+                    </div>
+                    
+                    <p><strong>부정적인 기록 😥</strong></p>
+                    <div class="examples">
+                        <div class="example-item example-negative">"팀 과제에서 의견 충돌이 있어서 속상했다. 대화로 잘 풀고 싶다."</div>
+                        <div class="example-item example-negative">"버스를 놓쳐서 약속에 늦었다. 아침에 좀 더 서두르지 못한 것이 후회된다."</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="view" class="tab-content">
+            <div class="inspiring-quote">
+                <div class="quote-text">"감정을 있는 그대로 인정하는 것은, 감정의 주인이 되는 첫걸음이다."</div>
+                <div class="quote-author">- 작자 미상</div>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <h3 style="margin-bottom: 15px;">💕 실시간 기분 기록들</h3>
+                <p style="color: #636e72; font-size: 14px; margin-bottom: 15px;">
+                    여러분이 제출한 기분 기록들이 실시간으로 업데이트됩니다!
+                </p>
+                
+                <div style="border: 1px solid #e9ecef; border-radius: 10px; overflow: hidden;">
+                    <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1v.../pubhtml?widget=true&amp;headers=false" width="100%" height="300"></iframe>
+                </div>
+                
+                <p style="color: #999; font-size: 12px; text-align: center; margin-top: 10px;">
+                    📊 Google Sheets로 실시간 연동
+                </p>
+            </div>
+        </div>
+        
+        <div id="stats" class="tab-content">
+            <div style="margin-bottom: 20px;">
+                <h3 style="margin-bottom: 15px;">📊 실시간 감정 통계</h3>
+                <p style="color: #636e72; font-size: 14px; margin-bottom: 15px;">
+                    수집된 데이터를 바탕으로 자동 생성되는 차트들입니다!
+                </p>
+                
+                <div style="display: grid; gap: 20px;">
+                    <div style="border: 1px solid #c5cae9; border-radius: 10px; padding: 15px; background: white;">
+                        <h4 style="margin-bottom: 10px;">긍정/부정 기분 분포</h4>
+                        <iframe seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/.../pubchart?oid=...&amp;format=interactive" width="100%" height="300"></iframe>
+                    </div>
+                    
+                    <div style="border: 1px solid #c5cae9; border-radius: 10px; padding: 15px; background: white;">
+                        <h4 style="margin-bottom: 10px;">일별 감정 점수 변화</h4>
+                        <iframe seamless frameborder="0" scrolling="no" src="https://docs.google.com/spreadsheets/d/e/.../pubchart?oid=...&amp;format=interactive" width="100%" height="300"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            
+            // event.target이 정의되지 않을 수 있으므로, 버튼을 직접 찾아 활성화합니다.
+            document.querySelector(`.nav-tab[onclick="showTab('${tabName}')"]`).classList.add('active');
+        }
+        // 페이지 로드 시 기본 탭을 활성화합니다.
+        document.addEventListener('DOMContentLoaded', () => {
+             showTab('record');
+        });
+    </script>
+</body>
+</html>
